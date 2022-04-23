@@ -1,8 +1,11 @@
 import { HeartIcon as HeartIconOutline } from "@heroicons/react/outline";
-import { HeartIcon as HeartIconSolid } from "@heroicons/react/solid";
+import {
+	HeartIcon as HeartIconSolid,
+	PencilAltIcon,
+} from "@heroicons/react/solid";
 import { useState } from "react";
 
-const PostCard = () => {
+const PostCard = ({ isInProfilePage }) => {
 	const [liked, setLiked] = useState(false);
 	const [readMore, setReadMore] = useState(false);
 
@@ -16,7 +19,7 @@ const PostCard = () => {
 			<div className="space-y-1">
 				<div className="flex items-center justify-between gap-3">
 					<h4 className="text-2xl font-semibold text-blue-600 lg:text-3xl">
-						Intrsting Title
+						Intersting Title
 					</h4>
 					<button
 						onClick={() => setLiked(!liked)}
@@ -41,11 +44,21 @@ const PostCard = () => {
 					Veniam autem numquam cum in est nisi deleniti? Fugiat
 					obcaecati modi ipsum?
 				</p>
-				<button
-					onClick={() => setReadMore(!readMore)}
-					className="text-sm font-semibold text-zinc-600 lg:text-base">
-					{!readMore ? "Read more" : "Show less"}
-				</button>
+				<div className="flex items-center justify-between gap-3">
+					<button
+						onClick={() => setReadMore(!readMore)}
+						className="text-sm font-semibold text-zinc-600 lg:text-base">
+						{!readMore ? "Read more" : "Show less"}
+					</button>
+					{isInProfilePage && (
+						<button className="inline-flex items-center justify-center gap-1 text-sm font-semibold text-blue-600 hover:underline lg:text-base">
+							<span>
+								<PencilAltIcon className="h-4 w-4 lg:h-5 lg:w-5" />
+							</span>
+							<span>Edit Post</span>
+						</button>
+					)}
+				</div>
 			</div>
 		</div>
 	);

@@ -19,7 +19,7 @@ const Home = () => {
 					<h1 className="text-4xl font-bold tracking-tighter text-zinc-900 lg:text-5xl">
 						Profiles
 					</h1>
-					<div className="grid grid-cols-1 gap-10 lg:grid-cols-2 lg:grid-cols-3">
+					<div className="grid grid-cols-1 gap-10 lg:grid-cols-2 xl:grid-cols-3">
 						<Profile />
 						<Profile />
 						<Profile />
