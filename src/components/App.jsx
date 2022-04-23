@@ -1,8 +1,9 @@
-import Navbar from "../components/Navbar";
-import Footer from "../components/Footer";
-import Home from "../components/home";
-import Login from "../components/login";
-import Register from "../components/register";
+import Navbar from "./Navbar";
+import Footer from "./Footer";
+import Home from "./home";
+import Login from "./login";
+import Register from "./register";
+import Profile from "./profile";
 import { Route, Routes } from "react-router-dom";
 
 const App = () => {
@@ -13,6 +14,7 @@ const App = () => {
 				<Route path="/" element={<Home />} />
 				<Route path="login" element={<Login />} />
 				<Route path="register" element={<Register />} />
+				<Route path=":username" element={<Profile />} />
 			</Routes>
 			<Footer />
 		</div>
