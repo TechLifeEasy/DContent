@@ -1,4 +1,5 @@
 import Web3 from "web3";
+import DContent from "../abis/DContent.json";
 
 async function loadWeb3() {
 	if (window.ethereum) {
@@ -13,4 +14,19 @@ async function loadWeb3() {
 	}
 }
 
-export { loadWeb3 };
+async function ConnectFind() {
+	const networkId = await window.web3.eth.net.getId();
+	const networkData = DContent.networks[networkId];
+
+	if (networkData) {
+		const d_content = new window.web3.eth.Contract(
+			DContent.abi,
+			networkData.address
+		);
+		return d_content;
+	}
+
+	return new Error("Network not found");
+}
+
+export { loadWeb3, ConnectFind };
