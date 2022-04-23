@@ -7,9 +7,27 @@ import Profile from "./profile";
 import UpdatePost from "./UpdatePost";
 import { Route, Routes } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { loadWeb3 } from "../API/index";
-import { getCurrentUser, updateUser, getAllUsers, getUser } from "../API/user";
-import { getAllProjects } from "../API/post";
+import { loadWeb3, UploadImage } from "../API/index";
+import {
+	getCurrentUser,
+	updateUser,
+	createUser,
+	getAllUsers,
+	getUser,
+	subscribedUser,
+} from "../API/user";
+import {
+	createPost,
+	getAllProjects,
+	getMyPosts,
+	getUserPosts,
+	updatePost,
+	getUserPrivatePosts,
+	createPrivatePost,
+} from "../API/post";
+
+// 0x7D4526A543101211805CA68CcE453f5ed39Fef52
+// 0x4A4041D2E129a2A7aC58725Fbb7A2BBF4414cDFB
 import { ConnectFind } from "../API/index";
 const App = () => {
 	async function init() {
@@ -18,20 +36,91 @@ const App = () => {
 
 	const [address, setAddress] = useState(false);
 
+	const captureFile = (event) => {
+		event.preventDefault();
+		const file = event.target.files[0];
+		const reader = new window.FileReader();
+		reader.readAsArrayBuffer(file);
+
+		reader.onloadend = async () => {
+			const hash = await UploadImage(Buffer(reader.result));
+			//https://ipfs.infura.io/ipfs/hash
+		};
+	};
+
+
 	useEffect(() => {
 		init().then(() => {
 			getCurrentUser()
 				.then((hash) => {
 					setAddress(hash);
 					ConnectFind().then((data) => {
-						// getAllProjects(data, hash).then((data) => {
+						// getAllProjects({ d_connect: data, address: hash }).then(
+						// 	(data) => {
+						// 		console.log(data[0].title);
+						// 	}
+						// );
+						// getMyPosts({ d_connect: data, address: hash }).then(
+						// 	(data) => {
+						// 		console.log(data);
+						// 	}
+						// );
+						// getUserPrivatePosts({
+						// 	d_connect: data,
+						// 	address: hash,
+						// 	user: "0x4A4041D2E129a2A7aC58725Fbb7A2BBF4414cDFB",
+						// }).then((data) => {
+						// 	console.log(data);
+						// });
+						// getMyPosts({
+						// 	d_connect: data,
+						// 	address: hash,
+						// 	user: hash,
+						// }).then((data) => {
 						// 	console.log(data);
 						// });
 						// updateUser({
 						// 	d_connect: data,
-						// 	name: "zeel",
+						// 	name: "zeel2.0",
 						// 	photo: "null",
 						// 	bio: "this is me",
+						// 	address: hash,
+						// }).then((data) => {
+						// 	console.log(data);
+						// });
+						// createUser({
+						// 	d_connect: data,
+						// 	name: "kalubhai",
+						// 	photo: "null",
+						// 	bio: "this is me",
+						// 	address: hash,
+						// }).then((data) => {
+						// 	console.log(data);
+						// });
+						// updatePost({
+						// 	d_connect: data,
+						// 	title: "secound post nahi hei",
+						// 	photo: "null",
+						// 	caption: "demo 311",
+						// 	address: hash,
+						// 	id: 0,
+						// }).then((data) => {
+						// 	console.log(data);
+						// });
+						// createPrivatePost({
+						// 	d_connect: data,
+						// 	title: "lkk post nahi hei",
+						// 	photo: "null",
+						// 	caption: "demo 311",
+						// 	address: hash,
+						// }).then((data) => {
+						// 	console.log(data);
+						// });
+						// createPost({
+						// 	d_connect: data,
+						// 	title: "secound post",
+						// 	photo: "null",
+						// 	caption: "demo 311",
 						// 	address: hash,
 						// }).then((data) => {
 						// 	console.log(data);
@@ -41,13 +130,20 @@ const App = () => {
 						// 		console.log(data);
 						// 	}
 						// );
-						getUser({
-							d_connect: data,
-							address: hash,
-							user: hash,
-						}).then((data) => {
-							console.log(data);
-						});
+						// getUser({
+						// 	d_connect: data,
+						// 	address: hash,
+						// 	user: hash,
+						// }).then((data) => {
+						// 	console.log(data);
+						// });
+						// subscribedUser({
+						// 	d_connect: data,
+						// 	address: hash,
+						// 	user: "0x4A4041D2E129a2A7aC58725Fbb7A2BBF4414cDFB",
+						// }).then((data) => {
+						// 	console.log(data);
+						// });
 					});
 				})
 				.catch((e) => console.log(e));
@@ -67,6 +163,10 @@ const App = () => {
 				/>
 				<Route path="/hash" element={<Profile address={address} />} />
 			</Routes>
+			<div>
+				<input type="file" name="file" onChange={captureFile}></input>
+			</div>
+
 			<Footer />
 		</div>
 	);

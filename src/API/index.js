@@ -1,5 +1,7 @@
 import Web3 from "web3";
 import DContent from "../abis/DContent.json";
+//Declare IPFS
+import { create } from "ipfs-http-client";
 
 async function loadWeb3() {
 	if (window.ethereum) {
@@ -29,4 +31,18 @@ async function ConnectFind() {
 	return new Error("Network not found");
 }
 
-export { loadWeb3, ConnectFind };
+async function UploadImage(buffer) {
+	const ipfs = create({
+		host: "ipfs.infura.io",
+		port: 5001,
+		protocol: "https",
+	}); // leaving out the arguments will default to these values
+
+	const id = await ipfs.add(buffer);
+
+	console.log(id);
+
+	return id;
+}
+
+export { loadWeb3, ConnectFind, UploadImage };

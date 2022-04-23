@@ -17,6 +17,7 @@ contract DContent {
 	}
 
 	struct Post_data {
+		uint256 id;
 		address owner;
 		string hash;
 		string title;
@@ -33,15 +34,20 @@ contract DContent {
 	mapping(address => User) public users;
 	mapping(address => bool) public isUser;
 	address[] public user_id;
+	uint256 public post_counter = 0;
 
 	// Network
 	mapping(address => mapping(address => bool)) public followers;
 	mapping(address => mapping(address => bool)) public following;
 	mapping(address => Network) public networks;
 
-	mapping(address => mapping(string => Post_data)) public posts;
-	mapping(address => mapping(string => Post_data)) internal private_posts;
-	mapping(address => string[]) public post_id;
+	mapping(address => mapping(uint256 => Post_data)) public posts;
+	mapping(address => mapping(uint256 => Post_data)) internal private_posts;
+	mapping(address => mapping(address => bool)) internal subscribed;
+	mapping(address => uint256) public amount;
+
+	mapping(address => uint256[]) public post_id;
+	mapping(address => uint256[]) internal private_id;
 
 	event UserUpdated(string name, string photo, string bio);
 
@@ -55,6 +61,7 @@ contract DContent {
 		require(msg.sender != address(0));
 		require(!isUser[msg.sender]);
 		User memory user = User(msg.sender, _name, photo, bio);
+		subscribed[msg.sender][msg.sender] = true;
 		users[msg.sender] = user;
 		user_id.push(msg.sender);
 		isUser[msg.sender] = true;
@@ -64,64 +71,30 @@ contract DContent {
 
 	function getUsers() public view returns (address[] memory) {
 		require(msg.sender != address(0));
+		// if (user_id.length == 0) return new User[](0);
+		// User[] memory data = new User[](user_id.length);
+		// for (uint256 i = 0; i < user_id.length; i++) {
+		// 	data[i] = users[user_id[i]];
+		// }
 		return user_id;
 	}
 
 	function getUser(address user) public view returns (User memory) {
 		require(msg.sender != address(0));
-		require(!isUser[msg.sender]);
+		require(isUser[user]);
 		return users[user];
 	}
 
-	function getName() external view returns (string memory) {
+	function updateUser(
+		string memory _name,
+		string memory photo,
+		string memory bio
+	) public {
 		require(msg.sender != address(0));
 		require(isUser[msg.sender]);
-		return users[msg.sender].name;
-	}
-
-	function getPhoto() public view returns (string memory) {
-		require(msg.sender != address(0));
-		require(isUser[msg.sender]);
-		return users[msg.sender].photo;
-	}
-
-	function getBio() public view returns (string memory) {
-		require(msg.sender != address(0));
-		require(isUser[msg.sender]);
-		return users[msg.sender].bio;
-	}
-
-	function setName(string memory newName) public {
-		require(msg.sender != address(0));
-		require(isUser[msg.sender]);
-		users[msg.sender].name = newName;
-		emit UserUpdated(
-			users[msg.sender].name,
-			users[msg.sender].photo,
-			users[msg.sender].bio
-		);
-	}
-
-	function setPhoto(string memory newPhoto) public {
-		require(msg.sender != address(0));
-		require(isUser[msg.sender]);
-		users[msg.sender].photo = newPhoto;
-		emit UserUpdated(
-			users[msg.sender].name,
-			users[msg.sender].photo,
-			users[msg.sender].bio
-		);
-	}
-
-	function setBio(string memory newBio) public {
-		require(msg.sender != address(0));
-		require(isUser[msg.sender]);
-		users[msg.sender].bio = newBio;
-		emit UserUpdated(
-			users[msg.sender].name,
-			users[msg.sender].photo,
-			users[msg.sender].bio
-		);
+		User memory user = User(msg.sender, _name, photo, bio);
+		users[msg.sender] = user;
+		emit UserUpdated(_name, photo, bio);
 	}
 
 	function follow(address user) public {
@@ -151,23 +124,80 @@ contract DContent {
 	}
 
 	function createPost(
-		string memory id,
-		string memory hash,
 		string memory title,
+		string memory hash,
 		string memory caption
 	) public {
 		require(msg.sender != address(0));
 		require(isUser[msg.sender]);
-		Post_data memory post = Post_data(msg.sender, hash, title, caption, 0);
+		Post_data memory post = Post_data(
+			post_counter,
+			msg.sender,
+			hash,
+			title,
+			caption,
+			0
+		);
+		posts[msg.sender][post_counter] = post;
+		post_id[msg.sender].push(post_counter);
+		post_counter++;
+		emit PostUpdated(hash, post.title, post.caption, post.likes);
+	}
+
+	function createPrivatePost(
+		string memory title,
+		string memory hash,
+		string memory caption
+	) public {
+		require(msg.sender != address(0));
+		require(isUser[msg.sender]);
+		Post_data memory post = Post_data(
+			post_counter,
+			msg.sender,
+			hash,
+			title,
+			caption,
+			0
+		);
+		private_posts[msg.sender][post_counter] = post;
+		private_id[msg.sender].push(post_counter);
+		post_counter++;
+		emit PostUpdated(hash, post.title, post.caption, post.likes);
+	}
+
+	function subscribedUser(address user) public {
+		require(msg.sender != address(0));
+		require(isUser[msg.sender]);
+		require(isUser[user]);
+
+		// do money trantions
+		subscribed[user][msg.sender] = true;
+	}
+
+	function updatePost(
+		string memory title,
+		string memory hash,
+		string memory caption,
+		uint256 id
+	) public {
+		require(msg.sender != address(0));
+		require(isUser[msg.sender]);
+		Post_data memory post = Post_data(
+			id,
+			msg.sender,
+			hash,
+			title,
+			caption,
+			posts[msg.sender][id].likes
+		);
 		posts[msg.sender][id] = post;
-		post_id[msg.sender].push(id);
 		emit PostUpdated(hash, post.title, post.caption, post.likes);
 	}
 
 	function getPosts() public view returns (Post_data[] memory) {
 		require(msg.sender != address(0));
 		require(isUser[msg.sender]);
-		string[] memory ids = post_id[msg.sender];
+		uint256[] memory ids = post_id[msg.sender];
 		Post_data[] memory retrieval = new Post_data[](ids.length);
 		for (uint256 i = 0; i < ids.length; i++) {
 			retrieval[i] = posts[msg.sender][ids[i]];
@@ -178,10 +208,27 @@ contract DContent {
 	function getPosts(address user) public view returns (Post_data[] memory) {
 		require(user != address(0));
 		require(isUser[user]);
-		string[] memory ids = post_id[user];
+		uint256[] memory ids = post_id[user];
 		Post_data[] memory retrieval = new Post_data[](ids.length);
 		for (uint256 i = 0; i < ids.length; i++) {
 			retrieval[i] = posts[user][ids[i]];
+		}
+		return retrieval;
+	}
+
+	function getPrivatePosts(address user)
+		public
+		view
+		returns (Post_data[] memory)
+	{
+		require(user != address(0));
+		require(isUser[user]);
+		require(subscribed[user][msg.sender]);
+
+		uint256[] memory ids = private_id[user];
+		Post_data[] memory retrieval = new Post_data[](ids.length);
+		for (uint256 i = 0; i < ids.length; i++) {
+			retrieval[i] = private_posts[user][ids[i]];
 		}
 		return retrieval;
 	}
@@ -190,7 +237,7 @@ contract DContent {
 		require(msg.sender != address(0));
 		if (user_id.length == 0) return new Post_data[](0);
 		Post_data[] memory all_posts = getPosts(user_id[0]);
-		for (uint256 i = 0; i < user_id.length; i++) {
+		for (uint256 i = 1; i < user_id.length; i++) {
 			Post_data[] memory user_id_posts = getPosts(user_id[i]);
 			Post_data[] memory temp = new Post_data[](
 				all_posts.length + user_id_posts.length
@@ -199,7 +246,7 @@ contract DContent {
 				temp[j] = all_posts[j];
 			}
 			for (uint256 j = 0; j < user_id_posts.length; j++) {
-				temp[j] = user_id_posts[all_posts.length + j];
+				temp[all_posts.length + j] = user_id_posts[j];
 			}
 			all_posts = temp;
 		}
