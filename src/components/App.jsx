@@ -6,8 +6,17 @@ import Register from "./register";
 import Profile from "./profile";
 import UpdatePost from "./UpdatePost";
 import { Route, Routes } from "react-router-dom";
-
+import { useEffect } from "react";
+import { loadWeb3 } from "../API/index";
 const App = () => {
+	async function init() {
+		await loadWeb3();
+	}
+
+	useEffect(() => {
+		init();
+	});
+
 	return (
 		<div className="relative min-h-screen pb-48 pt-24 subpixel-antialiased selection:bg-blue-100 lg:pb-56 lg:pt-32">
 			<Navbar />
