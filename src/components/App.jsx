@@ -4,6 +4,7 @@ import Home from "./home";
 import Login from "./login";
 import Register from "./register";
 import Profile from "./profile";
+import UpdatePost from "./UpdatePost";
 import { Route, Routes } from "react-router-dom";
 
 const App = () => {
@@ -14,6 +15,7 @@ const App = () => {
 				<Route path="/" element={<Home />} />
 				<Route path="login" element={<Login />} />
 				<Route path="register" element={<Register />} />
+				<Route path="update-post" element={<UpdatePost />} />
 				<Route path=":username" element={<Profile />} />
 			</Routes>
 			<Footer />

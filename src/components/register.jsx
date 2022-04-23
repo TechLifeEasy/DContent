@@ -31,7 +31,7 @@ const Register = () => {
 					</p>
 					{step === 1 && (
 						<>
-							<h1 className="max-w-2xl pt-10 text-center text-4xl font-bold tracking-tighter text-zinc-900 xl:text-5xl">
+							<h1 className="max-w-2xl pt-10 text-center text-4xl font-bold tracking-tighter text-zinc-900 lg:text-5xl">
 								Register
 							</h1>
 							<div className="grid place-content-center gap-3">
@@ -76,7 +76,7 @@ const Register = () => {
 					)}
 					{step === 2 && (
 						<>
-							<h1 className="max-w-2xl pt-10 text-center text-4xl font-bold tracking-tighter text-zinc-900 xl:text-5xl">
+							<h1 className="max-w-2xl pt-10 text-center text-4xl font-bold tracking-tighter text-zinc-900 lg:text-5xl">
 								Setting your profile
 							</h1>
 							<form
