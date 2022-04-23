@@ -6,7 +6,7 @@ const pageLinks = [
 	{ name: "Register", link: "/register" },
 ];
 
-const Navbar = () => {
+const Navbar = ({ address }) => {
 	const { pathname } = useLocation();
 
 	const [isScrolled, setIsScrolled] = useState(false);
@@ -36,19 +36,31 @@ const Navbar = () => {
 				</Link>
 
 				<ul className="flex items-center gap-1 font-semibold lg:gap-5">
-					{pageLinks.map(({ name, link }, index) => (
-						<li key={index}>
+					{address ? (
+						<li>
 							<Link
-								to={link}
-								className={`${
-									pathname === link
-										? "font-semibold text-zinc-900"
-										: "font-normal text-zinc-600"
-								} rounded-md py-1 px-1 transition-colors hover:bg-blue-50 active:text-blue-600 lg:px-2 lg:text-lg`}>
-								{name}
+								to="#"
+								className={`$rounded-md py-1 px-1 transition-colors hover:bg-blue-50 active:text-blue-600 lg:px-2 lg:text-lg`}>
+								{address}
 							</Link>
 						</li>
-					))}
+					) : (
+						<>
+							{pageLinks.map(({ name, link }, index) => (
+								<li key={index}>
+									<Link
+										to={link}
+										className={`${
+											pathname === link
+												? "font-semibold text-zinc-900"
+												: "font-normal text-zinc-600"
+										} rounded-md py-1 px-1 transition-colors hover:bg-blue-50 active:text-blue-600 lg:px-2 lg:text-lg`}>
+										{name}
+									</Link>
+								</li>
+							))}
+						</>
+					)}
 				</ul>
 			</nav>
 		</header>

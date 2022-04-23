@@ -1,7 +1,7 @@
 import Profile from "./ProfileCard";
 import Post from "./PostCard";
 
-const Home = () => {
+const Home = ({ address }) => {
 	return (
 		<>
 			<main className="container space-y-10">
