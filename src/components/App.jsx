@@ -58,11 +58,11 @@ const App = () => {
 				.then((hash) => {
 					setAddress(hash);
 					ConnectFind().then((data) => {
-						// getAllProjects({ d_connect: data, address: hash }).then(
-						// 	(data) => {
-						// 		console.log(data[0].title);
-						// 	}
-						// );
+						getAllProjects({ d_connect: data, address: hash }).then(
+							(data) => {
+								console.log(data[0].title);
+							}
+						);
 						// getMyPosts({ d_connect: data, address: hash }).then(
 						// 	(data) => {
 						// 		console.log(data);
