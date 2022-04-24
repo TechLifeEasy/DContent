@@ -1,43 +1,63 @@
 import { ConnectFind } from "./index";
 
-export const getCurrentUser = async () => {
+const getCurrentUser = async () => {
 	const users = await window.web3.eth.getAccounts();
 	return users[0];
 };
 
-export const createUser = async ({ d_connect, name, photo, bio, address }) => {
+async function createUser({ d_connect, name, photo, bio, address, amount }) {
 	const users = await d_connect.methods
-		.createUser(name, photo, bio)
+		.createUser(name, photo, bio, amount)
 		.send({ from: address });
 
 	return true;
-};
+}
 
-export const updateUser = async ({ d_connect, name, photo, bio, address }) => {
+async function updateUser({ d_connect, name, photo, bio, address, amount }) {
 	const users = await d_connect.methods
-		.updateUser(name, photo, bio)
+		.updateUser(name, photo, bio, amount)
 		.send({ from: address });
 
 	return true;
-};
+}
 
-export const getAllUsers = async ({ d_connect, address }) => {
+const getAllUsers = async ({ d_connect, address }) => {
 	const users = await d_connect.methods.getUsers().call({ from: address });
 	// console.log(users[0].name);
 	return users;
 };
 
-export const getUser = async ({ d_connect, address, user }) => {
+const getUser = async ({ d_connect, address, user }) => {
 	const users = await d_connect.methods.getUser(user).call({ from: address });
 	// console.log(users.photo);
 	return users;
 };
 
-export const subscribedUser = async ({ d_connect, address, user }) => {
+async function subscribedUser({ d_connect, address, user, amount }) {
 	console.log(user);
-	const users = await d_connect.methods
-		.subscribedUser(user)
-		.send({ from: address });
+	const users = await d_connect.methods.subscribedUser(user).send({
+		from: address,
+		value: window.web3.utils.toWei(amount.toString(), "ether"),
+	});
 	// console.log(users.photo);
 	return users;
+}
+
+async function getMySubscriptionsList({ d_connect, address }) {
+	// console.log(user);
+	const users = await d_connect.methods
+		.getMySubscriptions()
+		.call({ from: address });
+	// console.log(users.photo);
+	return users;
+}
+
+export {
+	getCurrentUser,
+	updateUser,
+	getAllUsers,
+	getUser,
+	createUser,
+	subscribedUser,
+	getMySubscriptionsList,
 };

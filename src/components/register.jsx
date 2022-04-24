@@ -6,6 +6,9 @@ import { ExclamationCircleIcon } from "@heroicons/react/solid";
 import { UploadImage } from "../API/index";
 import { createUser } from "../API/user";
 import { Navigate } from "react-router-dom";
+import { loadWeb3 } from "../API/index";
+import { getCurrentUser, getUser } from "../API/user";
+import { ConnectFind } from "../API";
 
 const Register = () => {
 	const navigate = useNavigate();
@@ -14,11 +17,15 @@ const Register = () => {
 		document.title = "Register";
 	}, []);
 
-	const { addressContext, dConnectContext } = useContext(UserContext);
+	const { addressContext, dConnectContext, userContext } =
+		useContext(UserContext);
 	const [address, setAddress] = addressContext;
 	const [dConnect, setDConnect] = dConnectContext;
+	const [user, setUser] = userContext;
 	const [name, setName] = useState(null);
 	const [isNameError, setIsNameError] = useState(false);
+	const [amount, setAmount] = useState(null);
+	const [isAmountError, setIsAmountError] = useState(false);
 	const [bio, setBio] = useState(null);
 	const [isBioError, setIsBioError] = useState(false);
 	const [file, setFile] = useState(null);
@@ -37,6 +44,18 @@ const Register = () => {
 	}, [name]);
 
 	useEffect(() => {
+		const validateAmount = (e) => {
+			const validate = /^\d+$/gi;
+			if (e !== null && (!validate.test(e.trim()) || e.trim() === "")) {
+				setIsAmountError(true);
+			} else {
+				setIsAmountError(false);
+			}
+		};
+		validateAmount(amount);
+	}, [amount]);
+
+	useEffect(() => {
 		const validateBio = (e) => {
 			if (e !== null && e.trim() === "") {
 				setIsBioError(true);
@@ -50,6 +69,11 @@ const Register = () => {
 	const handleSubmit = () => {
 		if (name === null || isNameError) {
 			setIsNameError(true);
+			return null;
+		}
+
+		if (amount === null || isAmountError) {
+			setIsAmountError(true);
 			return null;
 		}
 
@@ -81,9 +105,20 @@ const Register = () => {
 				name,
 				hash,
 				bio,
-				address
+				address,
+				+amount
 			);
-			if (isUserCreated) return navigate("/");
+			console.log(isUserCreated);
+			if (isUserCreated) {
+				const user = await getUser({
+					d_connect: dConnect,
+					address: address,
+					user: address,
+				});
+				console.log(user);
+				setUser(user);
+				return navigate("/");
+			}
 		};
 		sendData();
 	};
@@ -147,6 +182,26 @@ const Register = () => {
 							<p className="inline-flex items-center gap-1 text-sm font-semibold text-red-600 lg:text-base">
 								<ExclamationCircleIcon className="h-4 w-4 lg:h-5 lg:w-5" />
 								Bio can't be empty
+							</p>
+						)}
+					</div>
+					<div>
+						<label
+							htmlFor="amount"
+							className="block text-sm font-semibold text-zinc-600 lg:text-base">
+							Amount <span className="text-red-600">*</span>
+						</label>
+						<input
+							type="text"
+							name="amount"
+							placeholder="Amount"
+							onChange={(e) => setAmount(e.target.value)}
+							className="w-full truncate rounded-lg border-zinc-300 p-3 text-sm text-gray-700 placeholder-gray-600 ring-blue-600 transition-all focus:border-transparent focus:placeholder-gray-400 focus:outline-none focus:ring-2 lg:text-base"
+						/>
+						{isAmountError && (
+							<p className="inline-flex items-center gap-1 text-sm font-semibold text-red-600 lg:text-base">
+								<ExclamationCircleIcon className="h-4 w-4 lg:h-5 lg:w-5" />
+								Please enter a valid amount
 							</p>
 						)}
 					</div>

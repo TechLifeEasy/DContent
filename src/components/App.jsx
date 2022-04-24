@@ -15,6 +15,7 @@ import {
 	getAllUsers,
 	getUser,
 	subscribedUser,
+	getMySubscriptionsList,
 } from "../API/user";
 import {
 	createPost,
@@ -47,6 +48,7 @@ const App = () => {
 				const userHash = await getCurrentUser();
 				setAddress(userHash);
 				const data = await ConnectFind();
+				console.log(data);
 				setDConnect(data);
 				const user = await getUser({
 					d_connect: data,
@@ -54,7 +56,7 @@ const App = () => {
 					user: userHash,
 				});
 				console.log(user);
-				if (user === null) navigate("register");
+				// if (user === null) navigate("register");
 				setUser(user);
 			} catch (e) {
 				console.error(e);

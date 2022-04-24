@@ -56,7 +56,8 @@ contract DContent {
 	function createUser(
 		string memory _name,
 		string memory photo,
-		string memory bio
+		string memory bio,
+		uint256 _amount
 	) public {
 		require(msg.sender != address(0));
 		require(!isUser[msg.sender]);
@@ -66,6 +67,7 @@ contract DContent {
 		user_id.push(msg.sender);
 		isUser[msg.sender] = true;
 		networks[msg.sender] = Network(0, 0);
+		amount[msg.sender] = _amount;
 		emit UserUpdated(_name, photo, bio);
 	}
 
@@ -88,12 +90,16 @@ contract DContent {
 	function updateUser(
 		string memory _name,
 		string memory photo,
-		string memory bio
+		string memory bio,
+		uint256 _amount
 	) public {
 		require(msg.sender != address(0));
 		require(isUser[msg.sender]);
 		User memory user = User(msg.sender, _name, photo, bio);
 		users[msg.sender] = user;
+		if (_amount != 0) {
+			amount[msg.sender] = _amount;
+		}
 		emit UserUpdated(_name, photo, bio);
 	}
 
@@ -165,13 +171,20 @@ contract DContent {
 		emit PostUpdated(hash, post.title, post.caption, post.likes);
 	}
 
-	function subscribedUser(address user) public {
+	// function sendBal(address payable receiver) external payable onlyOwner {
+	// 	uint256 amount = msg.value;
+	// 	receiver.transfer(amount);
+	// }
+
+	function subscribedUser(address payable receiver) external payable {
 		require(msg.sender != address(0));
 		require(isUser[msg.sender]);
-		require(isUser[user]);
+		require(isUser[receiver]);
+
+		receiver.transfer(msg.value);
 
 		// do money trantions
-		subscribed[user][msg.sender] = true;
+		subscribed[receiver][msg.sender] = true;
 	}
 
 	function updatePost(
@@ -192,6 +205,28 @@ contract DContent {
 		);
 		posts[msg.sender][id] = post;
 		emit PostUpdated(hash, post.title, post.caption, post.likes);
+	}
+
+	function getMySubscriptions() public view returns (address[] memory) {
+		require(msg.sender != address(0));
+		require(isUser[msg.sender]);
+
+		uint256 count = 0;
+		for (uint256 i = 0; i < user_id.length; i++) {
+			if (subscribed[user_id[i]][msg.sender]) {
+				count++;
+			}
+		}
+
+		address[] memory user = new address[](count);
+		count = 0;
+		for (uint256 i = 0; i < user_id.length; i++) {
+			if (subscribed[user_id[i]][msg.sender]) {
+				user[count] = user_id[i];
+				count++;
+			}
+		}
+		return user;
 	}
 
 	function getPosts() public view returns (Post_data[] memory) {
