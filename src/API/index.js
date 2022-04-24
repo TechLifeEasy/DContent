@@ -3,10 +3,10 @@ import DContent from "../abis/DContent.json";
 //Declare IPFS
 import { create } from "ipfs-http-client";
 
-async function loadWeb3() {
+export const loadWeb3 = async () => {
 	if (window.ethereum) {
 		window.web3 = new Web3(window.ethereum);
-		await window.ethereum.enable();
+		await window.ethereum.eth_requestAccounts;
 	} else if (window.web3) {
 		window.web3 = new Web3(window.web3.currentProvider);
 	} else {
@@ -14,24 +14,24 @@ async function loadWeb3() {
 			"Non-Ethereum browser detected. You should consider trying MetaMask!"
 		);
 	}
-}
+};
 
-async function ConnectFind() {
+export const ConnectFind = async () => {
 	const networkId = await window.web3.eth.net.getId();
 	const networkData = DContent.networks[networkId];
 
 	if (networkData) {
-		const d_content = new window.web3.eth.Contract(
+		const dContent = new window.web3.eth.Contract(
 			DContent.abi,
 			networkData.address
 		);
-		return d_content;
+		return dContent;
 	}
 
 	return new Error("Network not found");
-}
+};
 
-async function UploadImage(buffer) {
+export const UploadImage = async (buffer) => {
 	const ipfs = create({
 		host: "ipfs.infura.io",
 		port: 5001,
@@ -43,6 +43,4 @@ async function UploadImage(buffer) {
 	console.log(id);
 
 	return id;
-}
-
-export { loadWeb3, ConnectFind, UploadImage };
+};

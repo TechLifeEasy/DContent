@@ -40,7 +40,7 @@ const Image = ({ fileError, file, setFile }) => {
 					} ${!inDraggableArea ? `border-dashed` : ``} rounded-md`}>
 					<DownloadIcon className="h-10 w-10 text-gray-400 lg:h-16 lg:w-16" />
 					<p className="text-gray-400 lg:text-lg">
-						Drag 'n' drop some files here or{" "}
+						Drag 'n' drop some file here or{" "}
 						<label htmlFor="fileInput">
 							<span className="cursor-pointer text-blue-600 focus:outline-none">
 								click here
