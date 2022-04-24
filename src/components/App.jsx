@@ -1,14 +1,13 @@
 import Navbar from "./Navbar";
 import Footer from "./Footer";
 import Home from "./home";
-import Login from "./login";
 import Register from "./register";
 import Profile from "./profile";
 import UpdatePost from "./UpdatePost";
 import UserContext from "./UserContext";
-import { Route, Routes, Navigate } from "react-router-dom";
+import { Route, Routes, useNavigate } from "react-router-dom";
 import { useEffect, useContext } from "react";
-import { loadWeb3, UploadImage } from "../API/index";
+import { loadWeb3 } from "../API/index";
 import {
 	getCurrentUser,
 	updateUser,
@@ -32,25 +31,16 @@ import {
 // 0xe54C3C91204DeC99bf34635C7FFB539679Dfb90b
 import { ConnectFind } from "../API/index";
 const App = () => {
+	const navigate = useNavigate();
+
 	const { userContext, addressContext, dConnectContext } =
 		useContext(UserContext);
 	const [user, setUser] = userContext;
 	const [address, setAddress] = addressContext;
 	const [dConnect, setDConnect] = dConnectContext;
 
-	const captureFile = (event) => {
-		event.preventDefault();
-		const file = event.target.files[0];
-		const reader = new window.FileReader();
-		reader.readAsArrayBuffer(file);
-
-		reader.onloadend = async () => {
-			const hash = await UploadImage(Buffer(reader.result));
-			//https://ipfs.infura.io/ipfs/hash
-		};
-	};
-
 	useEffect(() => {
+		document.title = "DContent";
 		const init = async () => {
 			try {
 				await loadWeb3();
@@ -64,13 +54,14 @@ const App = () => {
 					user: userHash,
 				});
 				console.log(user);
+				if (user === null) navigate("register");
 				setUser(user);
 			} catch (e) {
 				console.error(e);
 			}
 		};
 		init();
-	}, [setUser, setAddress, setDConnect]);
+	}, [setUser, setAddress, setDConnect, navigate]);
 
 	// useEffect(() => {
 	// 	init().then(() => {
@@ -173,22 +164,15 @@ const App = () => {
 	// 	});
 	// });
 
-	if (!user) return <Navigate to="/register" />;
-
 	return (
 		<div className="relative min-h-screen pb-48 pt-24 subpixel-antialiased selection:bg-blue-100 lg:pb-56 lg:pt-32">
 			<Navbar />
 			<Routes>
-				<Route path="/" element={<Home />} />
-				<Route path="login" element={<Login />} />
 				<Route path="register" element={<Register />} />
 				<Route path="update-post" element={<UpdatePost />} />
-				{user && <Route path="/hash" element={<Profile />} />}
+				{user && <Route path="/:hash" element={<Profile />} />}
+				<Route path="/" element={<Home />} />
 			</Routes>
-			<div>
-				<input type="file" name="file" onChange={captureFile}></input>
-			</div>
-
 			<Footer />
 		</div>
 	);

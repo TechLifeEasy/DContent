@@ -10,6 +10,10 @@ import { useParams } from "react-router-dom";
 import PostCard from "./PostCard";
 
 const Profile = () => {
+	useEffect(() => {
+		document.title = "Profile";
+	}, []);
+
 	const { hash } = useParams();
 	const [name, setName] = useState(false);
 	const [isNameError, setIsNameError] = useState(false);

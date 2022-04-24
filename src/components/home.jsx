@@ -1,7 +1,12 @@
 import Profile from "./ProfileCard";
 import Post from "./PostCard";
+import { useEffect } from "react";
 
-const Home = ({ address }) => {
+const Home = () => {
+	useEffect(() => {
+		document.title = "DContent";
+	}, []);
+
 	return (
 		<>
 			<main className="container space-y-10">

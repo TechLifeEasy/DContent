@@ -2,14 +2,12 @@ import UserContext from "./UserContext";
 import { Link, useLocation } from "react-router-dom";
 import { useEffect, useState, useContext } from "react";
 
-const pageLinks = [
-	{ name: "Login", link: "/login" },
-	{ name: "Register", link: "/register" },
-];
+const pageLinks = [{ name: "Register", link: "/register" }];
 
-const Navbar = ({ address }) => {
+const Navbar = () => {
 	const { pathname } = useLocation();
-	const { userContext } = useContext(UserContext);
+	const { userContext, addressContext } = useContext(UserContext);
+	const [address, setAddress] = addressContext;
 	const [user, setUser] = userContext;
 	const [isScrolled, setIsScrolled] = useState(false);
 
@@ -41,27 +39,23 @@ const Navbar = ({ address }) => {
 					{user ? (
 						<li>
 							<Link
-								to="#"
+								to={`/${address}`}
 								className={`$rounded-md py-1 px-1 transition-colors hover:bg-blue-50 active:text-blue-600 lg:px-2 lg:text-lg`}>
 								{user.name}
 							</Link>
 						</li>
 					) : (
-						<>
-							{pageLinks.map(({ name, link }, index) => (
-								<li key={index}>
-									<Link
-										to={link}
-										className={`${
-											pathname === link
-												? "font-semibold text-zinc-900"
-												: "font-normal text-zinc-600"
-										} rounded-md py-1 px-1 transition-colors hover:bg-blue-50 active:text-blue-600 lg:px-2 lg:text-lg`}>
-										{name}
-									</Link>
-								</li>
-							))}
-						</>
+						<li>
+							<Link
+								to="/register"
+								className={`${
+									pathname === "/register"
+										? "font-semibold text-zinc-900"
+										: "font-normal text-zinc-600"
+								} rounded-md py-1 px-1 transition-colors hover:bg-blue-50 active:text-blue-600 lg:px-2 lg:text-lg`}>
+								Register
+							</Link>
+						</li>
 					)}
 				</ul>
 			</nav>
