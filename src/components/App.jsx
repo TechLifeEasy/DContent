@@ -5,8 +5,9 @@ import Login from "./login";
 import Register from "./register";
 import Profile from "./profile";
 import UpdatePost from "./UpdatePost";
+import UserContext from "./UserContext";
 import { Route, Routes } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { loadWeb3, UploadImage } from "../API/index";
 import {
 	getCurrentUser,
@@ -31,6 +32,8 @@ import {
 // 0x4A4041D2E129a2A7aC58725Fbb7A2BBF4414cDFB
 import { ConnectFind } from "../API/index";
 const App = () => {
+	const { isAuthenticatedContext } = useContext(UserContext);
+
 	async function init() {
 		await loadWeb3();
 	}
