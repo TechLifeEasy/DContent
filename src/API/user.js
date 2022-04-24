@@ -5,17 +5,17 @@ async function getCurrentUser() {
 	return users[0];
 }
 
-async function createUser({ d_connect, name, photo, bio, address }) {
+async function createUser({ d_connect, name, photo, bio, address, amount }) {
 	const users = await d_connect.methods
-		.createUser(name, photo, bio)
+		.createUser(name, photo, bio, amount)
 		.send({ from: address });
 
 	return true;
 }
 
-async function updateUser({ d_connect, name, photo, bio, address }) {
+async function updateUser({ d_connect, name, photo, bio, address, amount }) {
 	const users = await d_connect.methods
-		.updateUser(name, photo, bio)
+		.updateUser(name, photo, bio, amount)
 		.send({ from: address });
 
 	return true;
@@ -34,11 +34,21 @@ async function getUser({ d_connect, address, user }) {
 	return users;
 }
 
-async function subscribedUser({ d_connect, address, user }) {
+async function subscribedUser({ d_connect, address, user, amount }) {
 	console.log(user);
+	const users = await d_connect.methods.subscribedUser(user).send({
+		from: address,
+		value: window.web3.utils.toWei(amount.toString(), "ether"),
+	});
+	// console.log(users.photo);
+	return users;
+}
+
+async function getMySubscriptionsList({ d_connect, address }) {
+	// console.log(user);
 	const users = await d_connect.methods
-		.subscribedUser(user)
-		.send({ from: address });
+		.getMySubscriptions()
+		.call({ from: address });
 	// console.log(users.photo);
 	return users;
 }
@@ -50,4 +60,5 @@ export {
 	getUser,
 	createUser,
 	subscribedUser,
+	getMySubscriptionsList,
 };

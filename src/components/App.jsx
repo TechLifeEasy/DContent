@@ -15,6 +15,7 @@ import {
 	getAllUsers,
 	getUser,
 	subscribedUser,
+	getMySubscriptionsList,
 } from "../API/user";
 import {
 	createPost,
@@ -47,7 +48,6 @@ const App = () => {
 			//https://ipfs.infura.io/ipfs/hash
 		};
 	};
-
 
 	useEffect(() => {
 		init().then(() => {
@@ -90,10 +90,11 @@ const App = () => {
 						// });
 						// createUser({
 						// 	d_connect: data,
-						// 	name: "kalubhai",
+						// 	name: "zeel",
 						// 	photo: "null",
 						// 	bio: "this is me",
 						// 	address: hash,
+						// 	amount: 2,
 						// }).then((data) => {
 						// 	console.log(data);
 						// });
@@ -130,6 +131,12 @@ const App = () => {
 						// 		console.log(data);
 						// 	}
 						// );
+						// getMySubscriptionsList({
+						// 	d_connect: data,
+						// 	address: hash,
+						// }).then((data) => {
+						// 	console.log(data);
+						// });
 						// getUser({
 						// 	d_connect: data,
 						// 	address: hash,
@@ -140,7 +147,8 @@ const App = () => {
 						// subscribedUser({
 						// 	d_connect: data,
 						// 	address: hash,
-						// 	user: "0x4A4041D2E129a2A7aC58725Fbb7A2BBF4414cDFB",
+						// 	user: "0x7D4526A543101211805CA68CcE453f5ed39Fef52",
+						// 	amount: 2,
 						// }).then((data) => {
 						// 	console.log(data);
 						// });
@@ -154,9 +162,9 @@ const App = () => {
 		<div className="relative min-h-screen pb-48 pt-24 subpixel-antialiased selection:bg-blue-100 lg:pb-56 lg:pt-32">
 			<Navbar address={address} />
 			<Routes>
-				<Route path="/" element={<Home address={address} />} />
-				{/* <Route path="login" element={<Login />} />
-				<Route path="register" element={<Register />} /> */}
+				{/* <Route path="/" element={<Home address={address} />} /> */}
+				<Route path="/register" element={<Register />} />
+				{/* <Route path="login" element={<Login />} /> */}
 				<Route
 					path="update-post"
 					element={<UpdatePost address={address} />}
