@@ -3,12 +3,12 @@ import { useState, createContext } from "react";
 const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
-	const [isAuthenticated, setIsAuthenticated] = useState(false);
+	const [user, setUser] = useState(null);
 	const [address, setAddress] = useState(null);
 	const [dConnect, setDConnect] = useState(null);
 
 	const context = {
-		isAuthenticatedContext: [isAuthenticated, setIsAuthenticated],
+		userContext: [user, setUser],
 		addressContext: [address, setAddress],
 		dConnectContext: [dConnect, setDConnect],
 	};

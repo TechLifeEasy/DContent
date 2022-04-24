@@ -1,5 +1,6 @@
+import UserContext from "./UserContext";
 import { Link, useLocation } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 
 const pageLinks = [
 	{ name: "Login", link: "/login" },
@@ -8,7 +9,8 @@ const pageLinks = [
 
 const Navbar = ({ address }) => {
 	const { pathname } = useLocation();
-
+	const { userContext } = useContext(UserContext);
+	const [user, setUser] = userContext;
 	const [isScrolled, setIsScrolled] = useState(false);
 
 	useEffect(() => {
@@ -36,12 +38,12 @@ const Navbar = ({ address }) => {
 				</Link>
 
 				<ul className="flex items-center gap-1 font-semibold lg:gap-5">
-					{address ? (
+					{user ? (
 						<li>
 							<Link
 								to="#"
 								className={`$rounded-md py-1 px-1 transition-colors hover:bg-blue-50 active:text-blue-600 lg:px-2 lg:text-lg`}>
-								{address}
+								{user.name}
 							</Link>
 						</li>
 					) : (

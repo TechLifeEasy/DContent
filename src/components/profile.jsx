@@ -10,7 +10,7 @@ import { useParams } from "react-router-dom";
 import PostCard from "./PostCard";
 
 const Profile = () => {
-	const { username } = useParams();
+	const { hash } = useParams();
 	const [name, setName] = useState(false);
 	const [isNameError, setIsNameError] = useState(false);
 	const [bio, setBio] = useState(false);
