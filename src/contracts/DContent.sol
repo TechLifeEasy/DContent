@@ -87,6 +87,12 @@ contract DContent {
 		return users[user];
 	}
 
+	function getAmount(address user) public view returns (uint256) {
+		require(msg.sender != address(0));
+		require(isUser[user]);
+		return amount[user];
+	}
+
 	function updateUser(
 		string memory _name,
 		string memory photo,
