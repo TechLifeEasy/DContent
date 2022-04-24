@@ -1,7 +1,7 @@
 import { HeartIcon as HeartIconOutline } from "@heroicons/react/outline";
 import {
 	HeartIcon as HeartIconSolid,
-	PencilAltIcon,
+	PencilIcon,
 } from "@heroicons/react/solid";
 import { useState } from "react";
 
@@ -53,7 +53,7 @@ const PostCard = ({ isInProfilePage }) => {
 					{isInProfilePage && (
 						<button className="inline-flex items-center justify-center gap-1 text-sm font-semibold text-blue-600 hover:underline lg:text-base">
 							<span>
-								<PencilAltIcon className="h-4 w-4 lg:h-5 lg:w-5" />
+								<PencilIcon className="h-4 w-4 lg:h-5 lg:w-5" />
 							</span>
 							<span>Edit Post</span>
 						</button>
